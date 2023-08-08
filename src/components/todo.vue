@@ -117,8 +117,8 @@ export default {
       } else {
         this.tasks.push({
           name: this.task,
-          status: 'Pendente',
-          criticidade: 'Tranquilo'
+          status: 'Escolha o Status',
+          criticidade: 'Escolha a Criticidade'
         });
       }
 
