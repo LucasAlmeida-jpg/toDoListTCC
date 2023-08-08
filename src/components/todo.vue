@@ -1,36 +1,67 @@
 <template>
-  <div class="container" style="max-width: 600px;">
-    <h2 class="text-center mt-5">TO DO APP</h2>
+  <div class="container">
+    <h2 class="text-center mt-5">TO DO LIST</h2>
     <div class="d-flex mt-5 rounded">
-      <input type="text" v-model="task" placeholder="Escreva suas tarefas" class="w-100 form control">
-      <div class="btn btn-primary ms-2" @click="submitTask">
+      <input v-model="task" placeholder="Escreva suas tarefas" class="w-100 form-control">
+      <button class="btn btn-primary ms-2" @click="submitTask">
         {{ addingTask ? 'Adicionar' : 'Atualizar' }}
-      </div>
+      </button>
     </div>
 
     <table class="table text-center table-bordered mt-5 rounded">
       <thead>
         <tr>
           <th scope="col">Tarefa</th>
+          <th scope="col">Status</th>
+          <th scope="col">Criticidade</th>
           <th scope="col">Editar</th>
           <th scope="col">Deletar</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(task, index) in tasks" :key="index">
-          <td>{{ task.name }}</td>
           <td>
-            <div @click="editTask(index)">
-              <i class="fa-solid fa-pen pointer"></i>
+            <span v-if="index === editedTaskIndex">
+              <input v-model="task.name" class="form-control" />
+            </span>
+            <span v-else>{{ task.name }}</span>
+          </td>
+          <td>
+            <span v-if="index === editedTaskIndex">
+              <select v-model="task.status">
+                <option value="Pendente">Pendente</option>
+                <option value="Em Progresso">Em Progresso</option>
+                <option value="Concluído">Concluído</option>
+              </select>
+            </span>
+            <span v-else>{{ task.status }}</span>
+          </td>
+          <td>
+            <span v-if="index === editedTaskIndex">
+              <select v-model="task.criticidade">
+                <option value="Tranquilo">Tranquilo</option>
+                <option value="Normal">Normal</option>
+                <option value="Importante">Importante</option>
+                <option value="Extremo">Extremo</option>
+              </select>
+            </span>
+            <span v-else>{{ task.criticidade }}</span>
+          </td>
+          <td>
+            <div v-if="index === editedTaskIndex">
+              <button @click="updateTask(index)">Salvar</button>
+              <button @click="cancelEdit">Cancelar</button>
+            </div>
+            <div v-else @click="editTask(index)" class="pointer">
+              <i class="fa-solid fa-pen"></i>
             </div>
           </td>
           <td>
-            <div @click="deleteTask(index)">
-              <i class="fa-solid fa-trash pointer"></i>
+            <div @click="deleteTask(index)" class="pointer">
+              <i class="fa-solid fa-trash"></i>
             </div>
           </td>
         </tr>
-
       </tbody>
     </table>
   </div>
@@ -38,45 +69,76 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String,
-  },
+  name: 'TodoList',
   data() {
     return {
       task: "",
-      editedTask: null,
+      editedTaskIndex: null,
       addingTask: true,
       tasks: []
+    };
+  },
+  created() {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+      this.tasks = JSON.parse(savedTasks);
     }
   },
   methods: {
-    capitalizeFirstChart(str) {
-      return str.charAt(0).toUppercase() + str.slice(1);
-    },
     editTask(index) {
-      this.task = this.tasks[index].name;
-      this.editedTask = index;
-      this.addingTask = false; // Altera para modo "atualizar"
+      this.editedTaskIndex = index;
+    },
+    cancelEdit() {
+      this.editedTaskIndex = null;
+    },
+    updateTask(index) {
+      this.editedTaskIndex = null;
+      this.saveTasksToLocalStorage();
     },
     deleteTask(index) {
-      this.tasks.splice(index, 1)
+      this.tasks.splice(index, 1);
+      this.saveTasksToLocalStorage();
+    },
+    updateStatus(index) {
+      this.saveTasksToLocalStorage();
+    },
+    updateCriticidade(index) {
+      this.saveTasksToLocalStorage();
     },
     submitTask() {
-      if (this.task.length === 0) return
-      if (this.editedTask != null) {
-        this.tasks[this.editedTask].name = this.task;
-        this.editedTask = null
+      if (!this.task.length) return;
+
+      if (this.editedTaskIndex !== null) {
+        this.tasks[this.editedTaskIndex] = {
+          ...this.tasks[this.editedTaskIndex],
+          name: this.task
+        };
+        this.editedTaskIndex = null;
       } else {
         this.tasks.push({
           name: this.task,
-        })
+          status: 'Pendente',
+          criticidade: 'Tranquilo'
+        });
       }
+
       this.task = "";
-      this.addingTask = true; // Altera para modo "adicionar"
+      this.addingTask = true;
+
+      this.saveTasksToLocalStorage();
     },
-  },
-}
+    saveTasksToLocalStorage() {
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    }
+  }
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+.container {
+  max-width: 600px;
+}
+.pointer {
+  cursor: pointer;
+}
+</style>
