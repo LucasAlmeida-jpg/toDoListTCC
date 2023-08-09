@@ -1,125 +1,120 @@
 <template>
   <div class="container">
-    <h2 class="text-center my-5">TO DO LIST</h2> <br>
-    <span class="img-logo"><img src="../assets/logo.png" alt="logo Vue.js"></span>
-    <div class="d-flex justify-content-center text-center">
+    <h2 class="text-center my-5">TO DO LIST</h2>
+    <div class="d-flex align-items-center justify-content-between my-5">
+      <div>
+      <span class="img-logo"><img src="../assets/logo.png" alt="logo Vue.js"></span>
+    </div>
+    <div>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Adicionar tarefa
+        ADICIONAR
       </button>
     </div>
-    <table class="table text-center table-bordered mt-5 rounded">
-      <thead>
-        <tr>
-          <th scope="col-md">Tarefa</th>
-          <th scope="col-md">Status</th>
-          <th scope="col-md">Criticidade
-            <span @click="toggleSortOrder" class="pointer">
-              <i class="fa-solid fa-filter"></i>
-            </span>
-          </th>
-          <th scope="col-md">Data</th>
-          <th scope="col-md">Editar</th>
-          <th scope="col-md">Deletar</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(task, index) in tasks" :key="index">
-          <td>
-            <span v-if="index === editedTaskIndex">
-              <input v-model="task.name" class="form-control" />
-            </span>
-            <span v-else>{{ task.name }}</span>
-          </td>
-          <td>
-            <span v-if="index === editedTaskIndex">
-              <select v-model="task.status">
-                <option value="Pendente">Pendente</option>
-                <option value="Em Progresso">Em Progresso</option>
-                <option value="Concluído">Concluído</option>
-              </select>
-            </span>
-            <span v-else>{{ task.status }}</span>
-          </td>
-          <td>
-            <span v-if="index === editedTaskIndex">
-              <select v-model="task.criticidade">
-                <option value="Tranquilo">Tranquilo</option>
-                <option value="Normal">Normal</option>
-                <option value="Importante">Importante</option>
-                <option value="Extremo">Extremo</option>
-              </select>
-            </span>
-            <span v-else>{{ task.criticidade }}</span>
-          </td>
-          <td>
-            <span v-if="index === editedTaskIndex">
-              <input type="date" v-model="task.date" class="form-control" />
-            </span>
-            <span v-else>{{ task.date }}</span>
-          </td>
-          <td>
-            <div v-if="index === editedTaskIndex">
-              <button @click="updateTask(index)">Ajustando</button>
-            </div>
-            <div v-else @click="openEditTaskModal(index)" data-bs-toggle="modal" data-bs-target="#exampleModal"
-              class="pointer">
-              <i class="fa-solid fa-pen"></i>
-            </div>
-          </td>
-          <td>
-            <div @click="deleteTask(index)" class="pointer">
-              <i class="fa-solid fa-trash"></i>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+    </div>
+    <ul class="list-group rounded">
+      
+      <li v-for="(task, index) in tasks" :key="index" class="list-group-item">
+        <div>
+          <h3>Nomes da Tarefa</h3>
+          <span v-if="index === editedTaskIndex">
+            <input required v-model="task.name" class="form-control" />
+          </span>
+          <span v-else>{{ task.name }}</span>
+        </div>
+        <div>
+          <h3>Status</h3>
+          <span v-if="index === editedTaskIndex">
+            <select v-model="task.status">
+              <option value="Pendente">Pendente</option>
+              <option value="Em Progresso">Em Progresso</option>
+              <option value="Concluído">Concluído</option>
+            </select>
+          </span>
+          <span v-else>{{ task.status }}</span>
+        </div>
+        <div>
+          <h3>Nível de criticidade</h3>
+          <span v-if="index === editedTaskIndex">
+            <select v-model="task.criticidade">
+              <option value="Tranquilo">Tranquilo</option>
+              <option value="Normal">Normal</option>
+              <option value="Importante">Importante</option>
+              <option value="Extremo">Extremo</option>
+            </select>
+          </span>
+          <span v-else>{{ task.criticidade }}</span>
+        </div>
+        <div>
+          <h3>Data</h3>
+          <span v-if="index === editedTaskIndex">
+            <input type="date" v-model="task.date" class="form-control" />
+          </span>
+          <span v-else>{{ task.date }}</span>
+        </div>
+        <div>
+          <h3>Editar</h3>
+          <div v-if="index === editedTaskIndex">
+            <button @click="updateTask(index)">Ajustando</button>
+          </div>
+          <div v-else @click="openEditTaskModal(index)" data-bs-toggle="modal" data-bs-target="#exampleModal"
+            class="pointer">
+            <i class="fa-solid fa-pen"></i>
+          </div>
+        </div>
+        <div>
+          <h3>Excluir</h3>
+          <div @click="deleteTask(index)" class="pointer">
+            <i class="fa-solid fa-trash"></i>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <!-- The modal content remains the same -->
+  </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
 
-          <div class="modal-body">
-            <div class="d-flex justify-content-between">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">{{ addingTask ? 'Adicionar Tarefa' : 'Editar Tarefa' }}
-              </h1>
+        <div class="modal-body">
+          <div class="d-flex justify-content-between">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ addingTask ? 'Adicionar Tarefa' : 'Editar Tarefa' }}
+            </h1>
 
-            </div>
-            <div class="form-floating mb-3 my-4">
-              <input v-model="modalTask.name" type="text" class="form-control" id="floatingInput" placeholder="Tarefa">
-              <label for="floatingInput">Tarefa</label>
-            </div>
-            <div class="form-floating mb-3">
-              <select v-model="modalTask.status">
-                <option value="Pendente">Pendente</option>
-                <option value="Em Progresso">Em Progresso</option>
-                <option value="Concluído">Concluído</option>
-              </select>
-            </div>
-            <div class="form-floating mb-3">
-              <select v-model="modalTask.criticidade">
-                <option value="Tranquilo">Tranquilo</option>
-                <option value="Normal">Normal</option>
-                <option value="Importante">Importante</option>
-                <option value="Extremo">Extremo</option>
-              </select>
-            </div>
-            <div class="form-floating mb-3">
-              <input v-model="modalTask.date" type="date" class="form-control" id="floatingPassword" placeholder="Data">
-              <label>Data</label>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                @click="cancelEdit">Cancelar</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveModalTask">{{ addingTask ?
-                'Adicionar' : 'Salvar Alterações' }}</button>
-            </div>
+          </div>
+          <div class="form-floating mb-3 my-4">
+            <input v-model="modalTask.name" type="text" class="form-control" id="floatingInput" placeholder="Tarefa">
+            <label for="floatingInput">Tarefa</label>
+          </div>
+          <div class="form-floating mb-3">
+            <select v-model="modalTask.status">
+              <option value="Pendente">Pendente</option>
+              <option value="Em Progresso">Em Progresso</option>
+              <option value="Concluído">Concluído</option>
+            </select>
+          </div>
+          <div class="form-floating mb-3">
+            <select v-model="modalTask.criticidade">
+              <option value="Tranquilo">Tranquilo</option>
+              <option value="Normal">Normal</option>
+              <option value="Importante">Importante</option>
+              <option value="Extremo">Extremo</option>
+            </select>
+          </div>
+          <div class="form-floating mb-3">
+            <input v-model="modalTask.date" type="date" class="form-control" id="floatingPassword" placeholder="Data">
+            <label>Data</label>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancelEdit">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveModalTask">{{ addingTask ?
+              'Adicionar' : 'Salvar Alterações' }}</button>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </template>
+
 
 <script>
 export default {
@@ -270,7 +265,7 @@ body,
 tr,
 input,
 select {
-  background-color: #1C1E25 !important;
+  background-color: #1a1a1a  !important;
   color: #42b983 !important;
 }
 
@@ -278,15 +273,11 @@ select {
   border: 1px solid #42b983 !important;
 }
 
-th {
-  font-size: 21px;
-}
-
 .btn-primary {
   background: #42b983 !important;
   padding: 7px 30px !important;
   border: none !important;
-  color: #1C1E25 !important;
+  color: #1a1a1a  !important;
   font-weight: bold !important;
 }
 
@@ -302,20 +293,22 @@ th {
 }
 
 .modal-content {
-  background: #1C1E25 !important;
+  background: #1a1a1a  !important;
   color: #42b983;
 }
-
-.img-logo {
+h3 {
+  font-size: 11px !important;
+  text-align: center;
+}
+/* .img-logo {
   display: flex !important;
   justify-content: center;
   align-items: center !important;
   text-align: center !important;
-}
+} */
 
 .img-logo img {
   width: 65px;
-  margin-top: -74px;
 }
 
 table th,
@@ -323,4 +316,15 @@ tr,
 thead,
 tbody {
   border: 1px solid #42b983 !important;
-}</style>
+}
+
+.list-group-item{
+  display: flex !important;
+  justify-content: space-between !important;
+  margin: 10px;
+  border-radius: 6px;
+  background: #242424 !important;
+  color: #42b983 !important;
+  padding: 20px !important;
+}
+</style>
