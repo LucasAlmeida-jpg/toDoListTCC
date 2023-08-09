@@ -77,13 +77,14 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ addingTask ? 'Adicionar Tarefa' : 'Editar Tarefa' }}
-            </h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
+
           <div class="modal-body">
-            <div class="form-floating mb-3">
+            <div class="d-flex justify-content-between">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">{{ addingTask ? 'Adicionar Tarefa' : 'Editar Tarefa' }}
+              </h1>
+
+            </div>
+            <div class="form-floating mb-3 my-4">
               <input v-model="modalTask.name" type="text" class="form-control" id="floatingInput" placeholder="Tarefa">
               <label for="floatingInput">Tarefa</label>
             </div>
@@ -106,11 +107,12 @@
               <input v-model="modalTask.date" type="date" class="form-control" id="floatingPassword" placeholder="Data">
               <label>Data</label>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancelEdit">Cancelar</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveModalTask">{{ addingTask ?
-              'Adicionar' : 'Salvar Alterações' }}</button>
+            <div class="d-flex justify-content-between mb-1">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                @click="cancelEdit">Cancelar</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveModalTask">{{ addingTask ?
+                'Adicionar' : 'Salvar Alterações' }}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -251,6 +253,7 @@ export default {
 body {
   font-family: Arial, Helvetica, sans-serif !important;
 }
+
 .pointer {
   cursor: pointer;
 }
@@ -269,11 +272,16 @@ input,
 select {
   background-color: #1C1E25 !important;
   color: #42b983 !important;
- }
+}
 
-.form-control{
+.form-control {
   border: 1px solid #42b983 !important;
 }
+
+th {
+  font-size: 21px;
+}
+
 .btn-primary {
   background: #42b983 !important;
   padding: 7px 30px !important;
@@ -298,17 +306,21 @@ select {
   color: #42b983;
 }
 
-.img-logo{
+.img-logo {
   display: flex !important;
   justify-content: center;
   align-items: center !important;
   text-align: center !important;
 }
-.img-logo img{
+
+.img-logo img {
   width: 65px;
-  margin-top: -74px;  
+  margin-top: -74px;
 }
-table th, tr, thead, tbody {
+
+table th,
+tr,
+thead,
+tbody {
   border: 1px solid #42b983 !important;
-}
-</style>
+}</style>
