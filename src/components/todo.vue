@@ -33,7 +33,7 @@
           <span v-else>{{ task.status }}</span>
         </div>
         <div>
-          <h3>Nível de criticidade</h3>
+          <h3>Nível de criticidade <span @click="toggleSortOrder"><i class="fa-solid fa-filter"></i></span></h3>
           <span v-if="index === editedTaskIndex">
             <select v-model="task.criticidade">
               <option value="Tranquilo">Tranquilo</option>
@@ -69,7 +69,6 @@
         </div>
       </li>
     </ul>
-    <!-- The modal content remains the same -->
   </div>
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -156,7 +155,6 @@ export default {
       this.addingTask = false;
     },
 
-    // Method to save or update the task from the modal
     saveModalTask() {
       if (!this.modalTask.name) return;
 
@@ -287,9 +285,9 @@ select {
 }
 
 .fa-filter {
-  margin-top: 4px;
   position: absolute;
-  margin-left: 29px;
+  margin-left: 9px;
+  cursor: pointer;
 }
 
 .modal-content {
@@ -300,12 +298,6 @@ h3 {
   font-size: 11px !important;
   text-align: center;
 }
-/* .img-logo {
-  display: flex !important;
-  justify-content: center;
-  align-items: center !important;
-  text-align: center !important;
-} */
 
 .img-logo img {
   width: 65px;
