@@ -1,13 +1,11 @@
 <template>
   <div class="container">
-    <h2 class="text-center mt-5">TO DO LIST</h2>
-    <div class="d-flex mt-5 rounded">
-      <input v-model="task" placeholder="Escreva suas tarefas" class="w-100 form-control">
-      <button class="btn btn-primary ms-2" @click="submitTask">
-        {{ addingTask ? 'Adicionar' : 'Atualizar' }}
+    <h2 class="text-center my-5">TO DO LIST</h2>
+    <div class="d-flex justify-content-center text-center">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Adicionar tarefa
       </button>
     </div>
-
     <table class="table text-center table-bordered mt-5 rounded">
       <thead>
         <tr>
@@ -59,7 +57,8 @@
               <button @click="updateTask(index)">Salvar</button>
               <button @click="cancelEdit">Cancelar</button>
             </div>
-            <div v-else @click="editTask(index)" class="pointer">
+            <div v-else @click="openEditTaskModal(index)" data-bs-toggle="modal" data-bs-target="#exampleModal"
+              class="pointer">
               <i class="fa-solid fa-pen"></i>
             </div>
           </td>
@@ -72,9 +71,6 @@
       </tbody>
     </table>
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-      Launch demo modal
-    </button>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -110,8 +106,9 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveModalTask">{{ addingTask ? 'Adicionar' : 'Salvar Alterações' }}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancelEdit">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveModalTask">{{ addingTask ?
+              'Adicionar' : 'Salvar Alterações' }}</button>
           </div>
         </div>
       </div>
@@ -198,6 +195,11 @@ export default {
     },
     updateCriticidade(index) {
       this.saveTasksToLocalStorage();
+    },
+    openEditTaskModal(index) {
+      this.modalTask = { ...this.tasks[index] };
+      this.editedTaskIndex = index;
+      this.addingTask = false;
     },
     submitTask() {
       if (!this.task.length) return;
