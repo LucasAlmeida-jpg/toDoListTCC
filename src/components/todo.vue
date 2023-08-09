@@ -54,8 +54,7 @@
           </td>
           <td>
             <div v-if="index === editedTaskIndex">
-              <button @click="updateTask(index)">Salvar</button>
-              <button @click="cancelEdit">Cancelar</button>
+              <button @click="updateTask(index)">Ajustando</button>
             </div>
             <div v-else @click="openEditTaskModal(index)" data-bs-toggle="modal" data-bs-target="#exampleModal"
               class="pointer">
@@ -226,7 +225,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .pointer {
   cursor: pointer;
 }
@@ -238,4 +237,28 @@ select {
   cursor: pointer;
   border: 1px solid #ced4da;
 }
-</style>
+
+body,
+tr,
+input,
+select {
+  background-color: #1C1E25 !important;
+  color: #ced4da !important;
+
+}
+
+.btn-primary {
+  background: #7553E2 !important;
+  padding: 7px 30px !important;
+  border: none !important;
+}
+
+.fa-pen,
+.fa-trash {
+  color: #7553E2 !important;
+}
+
+.modal-content {
+  background: #1C1E25 !important;
+  color: white;
+}</style>
