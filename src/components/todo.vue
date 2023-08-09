@@ -3,16 +3,16 @@
     <h2 class="text-center my-5">TO DO LIST</h2>
     <div class="d-flex align-items-center justify-content-between my-5">
       <div>
-      <span class="img-logo"><img src="../assets/logo.png" alt="logo Vue.js"></span>
-    </div>
-    <div>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        ADICIONAR
-      </button>
-    </div>
+        <span class="img-logo"><img src="../assets/logo.png" alt="logo Vue.js"></span>
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          ADICIONAR
+        </button>
+      </div>
     </div>
     <ul class="list-group rounded">
-      
+
       <li v-for="(task, index) in tasks" :key="index" class="list-group-item">
         <div>
           <h3>Nomes da Tarefa</h3>
@@ -49,7 +49,7 @@
           <span v-if="index === editedTaskIndex">
             <input type="date" v-model="task.date" class="form-control" />
           </span>
-          <span v-else>{{ task.date }}</span>
+          <span v-else>{{ formatDate(task.date) }}</span>
         </div>
         <div>
           <h3>Editar</h3>
@@ -82,17 +82,19 @@
           </div>
           <div class="form-floating mb-3 my-4">
             <input v-model="modalTask.name" type="text" class="form-control" id="floatingInput" placeholder="Tarefa">
-            <label for="floatingInput">Tarefa</label>
+            <label for="floatingInput">Digite sua tarefa</label>
           </div>
           <div class="form-floating mb-3">
-            <select v-model="modalTask.status">
+            <label for="status">Selecione o Status</label>
+            <select id="status" v-model="modalTask.status">
               <option value="Pendente">Pendente</option>
               <option value="Em Progresso">Em Progresso</option>
               <option value="Concluído">Concluído</option>
             </select>
           </div>
           <div class="form-floating mb-3">
-            <select v-model="modalTask.criticidade">
+            <label for="critical">Selecione a Criticidade</label>
+            <select id="critical" v-model="modalTask.criticidade">
               <option value="Tranquilo">Tranquilo</option>
               <option value="Normal">Normal</option>
               <option value="Importante">Importante</option>
@@ -238,7 +240,19 @@ export default {
         return (criticidadeA - criticidadeB) * multiplier;
       });
     },
-  }
+    formatDate(value) {
+      if (value) {
+        const date = new Date(value);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Mês começa de 0
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+      return '';
+    },
+  },
+
+
 };
 </script>
 
@@ -263,7 +277,7 @@ body,
 tr,
 input,
 select {
-  background-color: #1a1a1a  !important;
+  background-color: #1a1a1a !important;
   color: #42b983 !important;
 }
 
@@ -271,11 +285,11 @@ select {
   border: 1px solid #42b983 !important;
 }
 
-.btn-primary {
+.btn-primary, .btn-secondary {
   background: #42b983 !important;
   padding: 7px 30px !important;
   border: none !important;
-  color: #1a1a1a  !important;
+  color: #1a1a1a !important;
   font-weight: bold !important;
 }
 
@@ -291,9 +305,10 @@ select {
 }
 
 .modal-content {
-  background: #1a1a1a  !important;
+  background: #242424 !important;
   color: #42b983;
 }
+
 h3 {
   font-size: 11px !important;
   text-align: center;
@@ -310,7 +325,7 @@ tbody {
   border: 1px solid #42b983 !important;
 }
 
-.list-group-item{
+.list-group-item {
   display: flex !important;
   justify-content: space-between !important;
   margin: 10px;
