@@ -6,14 +6,52 @@
         <span class="img-logo"><img src="../assets/logo.png" alt="logo Vue.js"></span>
       </div>
       <div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-          ADICIONAR
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+          aria-controls="offcanvasRight">
+          MENU
         </button>
+      </div>
+    </div>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header my-4">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Filtros <i class="fa-solid fa-filter mt-1"></i></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="filters">
+          <button type="button" class="btn btn-primary w-100 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            ADICIONE TAREFAS NA LISTA
+          </button>
+
+          <label>Filtrar por Data:</label>
+          <select v-model="dateFilter">
+            <option value="all">Todos</option>
+            <option value="asc">Menor data</option>
+            <option value="desc">Maior data</option>
+          </select>
+
+          <label class="mt-4">Filtrar por Status:</label>
+          <select v-model="statusFilter">
+            <option value="all">Todos</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Em Progresso">Em Progresso</option>
+            <option value="Concluído">Concluído</option>
+          </select>
+
+          <label class="mt-4">Filtrar por Criticidade:</label>
+          <select v-model="criticidadeFilter">
+            <option value="all">Todos</option>
+            <option value="Tranquilo">Tranquilo</option>
+            <option value="Normal">Normal</option>
+            <option value="Importante">Importante</option>
+            <option value="Extremo">Extremo</option>
+          </select>
+        </div>
       </div>
     </div>
     <ul class="list-group rounded">
 
-      <li v-for="(task, index) in tasks" :key="index" class="list-group-item">
+      <li v-for="(task, index) in filteredTasks" :key="index" class="list-group-item">
         <div>
           <h3>Nomes da Tarefa</h3>
           <span v-if="index === editedTaskIndex">
@@ -33,8 +71,8 @@
           <span v-else>{{ task.status }}</span>
         </div>
         <div>
-          <h3>Nível de criticidade <span @click="toggleSortOrder"><i class="fa-solid fa-filter"></i></span></h3>
-          <span v-if="index === editedTaskIndex">
+          <h3>Nível de criticidade</h3>
+          <span v-if="index === editedTaskIndex" class="input-container">
             <select v-model="task.criticidade">
               <option value="Tranquilo">Tranquilo</option>
               <option value="Normal">Normal</option>
@@ -42,7 +80,7 @@
               <option value="Extremo">Extremo</option>
             </select>
           </span>
-          <span v-else>{{ task.criticidade }}</span>
+          <span v-else :class="getCriticidadeClass(task.criticidade)">{{ task.criticidade }}</span>
         </div>
         <div>
           <h3>Data</h3>
@@ -133,8 +171,35 @@ export default {
         criticidade: "Criticidade",
         date: "",
       },
+      dateFilter: 'all',
+      statusFilter: 'all',
+      criticidadeFilter: 'all'
+
     };
   },
+  computed: {
+    filteredTasks() {
+      let filtered = this.tasks.slice();
+
+      if (this.dateFilter === 'asc') {
+        filtered = filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+      } else if (this.dateFilter === 'desc') {
+        filtered = filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      }
+
+      if (this.criticidadeFilter !== 'all') {
+        filtered = filtered.filter(task => task.criticidade === this.criticidadeFilter);
+      }
+
+      if (this.statusFilter !== 'all') {
+        filtered = filtered.filter(task => task.status === this.statusFilter);
+      }
+
+      return filtered;
+    }
+
+  }
+  ,
   created() {
     const savedTasks = localStorage.getItem('tasks');
     if (savedTasks) {
@@ -150,6 +215,20 @@ export default {
         date: ''
       };
       this.addingTask = true;
+    },
+    getCriticidadeClass(criticidade) {
+      switch (criticidade) {
+        case "Tranquilo":
+          return "tranquilo";
+        case "Normal":
+          return "normal";
+        case "Importante":
+          return "importante";
+        case "Extremo":
+          return "extremo";
+        default:
+          return "";
+      }
     },
     openEditTaskModal(index) {
       this.modalTask = { ...this.tasks[index] };
@@ -243,22 +322,30 @@ export default {
     formatDate(value) {
       if (value) {
         const date = new Date(value);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Mês começa de 0
-        const year = date.getFullYear();
+        date.setUTCHours(0, 0, 0, 0); // Define o horário para 00:00:00 (UTC)
+
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+        const year = date.getUTCFullYear();
+
         return `${day}/${month}/${year}`;
       }
       return '';
     },
+
   },
-
-
 };
 </script>
 
 <style>
 body {
+  margin: 0px !important;
+  padding: 0 0px !important;
   font-family: Arial, Helvetica, sans-serif !important;
+  color: black;
+  line-height: 1;
+  text-align: left;
+  text-transform: none;
 }
 
 .pointer {
@@ -285,9 +372,26 @@ select {
   border: 1px solid #42b983 !important;
 }
 
-.btn-primary, .btn-secondary {
+.tranquilo {
+  color: blue;
+}
+
+.normal {
+  color: white;
+}
+
+.importante {
+  color: yellow;
+}
+
+.extremo {
+  color: red;
+}
+
+.btn-primary,
+.btn-secondary {
   background: #42b983 !important;
-  padding: 7px 30px !important;
+  padding: 13px 30px !important;
   border: none !important;
   color: #1a1a1a !important;
   font-weight: bold !important;
@@ -334,12 +438,18 @@ tbody {
   color: #42b983 !important;
   padding: 20px !important;
 }
-#exampleModal{
-background: rgba(255, 255, 255, 0.2);
-border-radius: 16px;
-box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-backdrop-filter: blur(8.4px);
--webkit-backdrop-filter: blur(8.4px);
-border: 1px solid rgba(255, 255, 255, 0.3);
+
+.offcanvas {
+  margin: 0;
+  background: #242424 !important;
+  color: #42b983 !important;
+}
+
+#exampleModal {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8.4px);
+  -webkit-backdrop-filter: blur(8.4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 </style>
